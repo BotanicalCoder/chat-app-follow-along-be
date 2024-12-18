@@ -76,3 +76,22 @@ export const login = async (req, res, next) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+export const get_user_info = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.user.email });
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid user" });
+    }
+
+    return res.status(200).json({
+      message: "user retrieved successfully",
+      data: { ...user._doc, password: null, __v: null },
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
