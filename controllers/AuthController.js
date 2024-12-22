@@ -95,3 +95,33 @@ export const get_user_info = async (req, res, next) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+export const update_profile = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.user.email });
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid user" });
+    }
+
+    const { first_name, last_name, color } = req.body;
+
+    if (!first_name || !last_name || !color) {
+      return res.status(400).json({ message: "Please provide all the fields" });
+    }
+
+    const userData = await User.findByIdAndUpdate(
+      user.id,
+      { first_name, last_name, color, profile_setup: true },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      message: "user data updated successfully",
+      data: { ...userData._doc, password: null, __v: null },
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
