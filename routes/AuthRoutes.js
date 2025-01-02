@@ -6,6 +6,7 @@ import {
   update_profile,
   add_profile_image,
   remove_profile_image,
+  logout,
 } from "../controllers/AuthController.js";
 import { verify_token } from "../middlewares/AuthMiddlewars.js";
 
@@ -27,5 +28,6 @@ authRoutes.post(
 );
 
 authRoutes.delete("/delete-profile-image", verify_token, remove_profile_image);
+authRoutes.post("/logout", logout);
 
 export default authRoutes;
