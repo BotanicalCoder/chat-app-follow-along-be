@@ -8,7 +8,7 @@ import {
   remove_profile_image,
   logout,
 } from "../controllers/AuthController.js";
-import { verify_token } from "../middlewares/AuthMiddlewars.js";
+import { verify_token } from "../middlewares/AuthMiddlewares.js";
 
 import multer from "multer";
 
