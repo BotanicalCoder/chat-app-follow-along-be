@@ -5,7 +5,10 @@ export const search_contacts = async (req, res, next) => {
     const { term } = req.body;
 
     if (!term) {
-      return res.status(400).json({ message: "Please provide a search term" });
+      return res.status(200).json({
+        message: "Contacts retrieved successfully",
+        data: [],
+      });
     }
 
     const sanitizeTerm = term
