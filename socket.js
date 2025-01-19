@@ -29,6 +29,7 @@ const setupSocket = (server) => {
   };
 
   const sendMessage= async (message)=>{
+
     const senderSocketId= userSocketMap.get(message.sender);
     const receiverSocketId= userSocketMap.get(message.recipient);
     const createdMessage= await Message.create(message);
@@ -40,7 +41,7 @@ const setupSocket = (server) => {
     }
 
     if (senderSocketId) {
-      io.to(receiverSocketId).emit("receiveMessage", messageData);
+      io.to(senderSocketId).emit("receiveMessage", messageData);
     }
   
   }

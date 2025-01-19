@@ -17,11 +17,13 @@ const messageSchema = new mongoose.Schema({
     ref: "Users",
     required: false,
   },
+  // TODO change to snake case
   messageType: {
     type: String,
     enum: ["text", "file"],
     required: true,
   },
+  // TODO change to snake case
   fileUrl: {
     type: String,
     required: function () {
