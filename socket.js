@@ -1,4 +1,5 @@
 import { Server as SocketIOServer } from "socket.io";
+import Message from "./models/MessagesModel.js";
 
 const setupSocket = (server) => {
   const io = new SocketIOServer(server, {
@@ -9,7 +10,11 @@ const setupSocket = (server) => {
     },
   });
 
-  const userSocketMap = new Map();
+  /**
+   * TODO
+   * switch this to sqllite
+   */
+  const userSocketMap = new Map(); 
 
   const disconnect = (socket) => {
     console.log(`client disconnected from socket: ${socket.id}`);
@@ -23,6 +28,23 @@ const setupSocket = (server) => {
     }
   };
 
+  const sendMessage= async (message)=>{
+    const senderSocketId= userSocketMap.get(message.sender);
+    const receiverSocketId= userSocketMap.get(message.recipient);
+    const createdMessage= await Message.create(message);
+
+    const messageData = await Message.findById(createdMessage._id).populate("sender", "_id email first_name last_name img color").populate("recipient", "_id email first_name last_name img color");
+    
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("receiveMessage", messageData);
+    }
+
+    if (senderSocketId) {
+      io.to(receiverSocketId).emit("receiveMessage", messageData);
+    }
+  
+  }
+
   io.on("connection", (socket) => {
     const userId = socket.handshake.query.userId;
 
@@ -33,7 +55,8 @@ const setupSocket = (server) => {
     } else {
       console.log("User id not provided during connection");
     }
-
+    
+    socket.on("sendMessage", sendMessage);
     socket.on("disconnect", disconnect);
   });
 };
